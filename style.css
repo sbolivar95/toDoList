@@ -1,0 +1,66 @@
+html,
+body {
+  margin: 0px;
+}
+
+.borderStyle {
+  border: groove black;
+  width: fit-content;
+  padding: 20px;
+  border-radius: 10px;
+  margin: 20px;
+}
+
+.header {
+  background-color: grey;
+  padding: 2px;
+  text-align: center;
+}
+
+#buttonStyle {
+  margin-right: 30px;
+  margin-bottom: 10px;
+  position: relative;
+  bottom: 5px;
+}
+
+#mainContent {
+  justify-content: center;
+  text-align: center;
+}
+
+#taskButton {
+  margin: 10px;
+  padding-left: 100px;
+  padding-bottom: 50px;
+}
+
+.orderedList {
+  margin-left: 30px;
+  font-size: 25px;
+}
+
+#delButton {
+  text-align: center;
+  position: relative;
+  margin-left: 30px;
+  bottom: 2px;
+  font-size: 15px;
+  font-weight: bold;
+  width: fit-content;
+}
+
+#completeTask {
+  position: relative;
+  margin-left: 30px;
+  bottom: 2px;
+  font-size: 15px;
+  font-weight: bold;
+  width: fit-content;
+}
+
+#section1 {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
