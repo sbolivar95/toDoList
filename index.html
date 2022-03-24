@@ -4,7 +4,18 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>To Do List</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+      integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+      crossorigin=""
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+      integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+      crossorigin=""
+    ></script>
     <link rel="stylesheet" href="style.css" />
     <script defer src="script.js"></script>
   </head>
@@ -18,13 +29,21 @@
           <h2>Things I need to do Today!</h2>
         </div>
       </section>
-      <section id="addTask">
+      <section id="section2">
         <div id="spaceButtons">
           <button name="button1" class="buttonStyle" type="button">
             Add To Do Task
           </button>
-          <input id="textArea" type="text" />
+          <input
+            id="textArea"
+            placeholder="Please write your task"
+            type="text"
+          />
         </div>
+      </section>
+
+      <section id="section3">
+        <div id="map"></div>
       </section>
     </main>
   </body>
