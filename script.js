@@ -3,8 +3,101 @@
 const addButton = document.querySelector('.buttonStyle');
 const mainContent = document.querySelector('#mainContent');
 const textValue = document.getElementById('textArea');
+const section1 = document.getElementById('section1');
 
-if (navigator.geolocation)
+//////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////*******FUNCTIONS*****//////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+//Appends all elements when clicking on Map or when clicking Add to do Task
+const appendElements = function (
+  elementId,
+  appendEl1,
+  appendEl2,
+  appendEl3,
+  appendEl4
+) {
+  elementId.appendChild(appendEl1);
+  elementId.appendChild(appendEl2);
+  elementId.appendChild(appendEl3);
+  elementId.appendChild(appendEl4);
+};
+
+// Creates a Pin if needed
+const createdPinTask = function (firstElement, pin, mapElement, secondElement) {
+  firstElement.addEventListener('click', function () {
+    pin.addTo(mapElement).bindPopup(`${secondElement.textContent}`);
+
+    switch (firstElement.textContent) {
+      case 'Create Pin':
+        firstElement.textContent = 'See Task';
+        break;
+      case 'See Task':
+        pin.openPopup();
+        firstElement.textContent = 'Hide Task';
+        break;
+      case 'Hide Task':
+        pin.closePopup();
+        firstElement.textContent = 'See Task';
+    }
+  });
+};
+
+//Will delete appended Task after created
+const deleteElements = function (deleteBtn, el1, el2, el3, el4, el5) {
+  //Delete Button function
+  deleteBtn.addEventListener('click', function () {
+    el1.remove();
+    el2.remove();
+    el3.remove();
+    el4.remove();
+    el5.remove();
+  });
+};
+
+// Complete task element, on click will cross out the task or uncross it
+const completeTaskButton = function (completeButton, createElement) {
+  completeButton.addEventListener('click', function () {
+    switch (completeButton.textContent) {
+      case 'Complete Task':
+        createElement.style.textDecoration = 'line-through';
+        completeButton.textContent = 'Uncomplete Task';
+        break;
+      case 'Uncomplete Task':
+        createElement.style.textDecoration = null;
+        completeButton.textContent = 'Complete Task';
+    }
+  });
+};
+
+// Assign values and classes to the appended element after clicking on map or clicking on Add to do Task
+const assignValuesToElements = function (
+  createElement,
+  delElement,
+  completeElement,
+  createPinElement,
+  textValueElement,
+  createPinElementValue
+) {
+  createElement.classList = 'orderedList';
+  delElement.classList = 'delButton';
+  delElement.textContent = 'Delete Task';
+  completeElement.classList = 'completeTask';
+  completeElement.textContent = 'Complete Task';
+  createPinElement.classList = 'seeTask';
+  createPinElement.textContent = createPinElementValue;
+  createElement.textContent = textValueElement.value;
+  textValueElement.value = null;
+};
+//////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////*******FUNCTIONS*****//////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+if (navigator.geolocation) {
   ///////////////////////////////////////////////////////////////////////////
   // Section Map Functions and eventListeners
   ///////////////////////////////////////////////////////////////////////////
@@ -16,7 +109,12 @@ if (navigator.geolocation)
       const map = L.map('map').setView(coords, 13.5);
       // Creating a Pin or Marker
       map.on('click', function (position) {
+        const createTask = document.createElement('p');
+        const delButton = document.createElement('button');
+        const completeTask = document.createElement('button');
+        const createPin = document.createElement('button');
         const latlng = [position.latlng.lat, position.latlng.lng];
+
         if (!textValue.value) {
           alert('Please add Task');
         } else {
@@ -28,54 +126,39 @@ if (navigator.geolocation)
             .addTo(map)
             .bindPopup(`${textValue.value}`);
 
-          const createTask = document.createElement('p');
-          const delButton = document.createElement('button');
-          const completeTask = document.createElement('button');
-          const seeTask = document.createElement('button');
-          const closePopup = document.createElement('button');
+          //Appending elements to HTML
+          appendElements(
+            section1,
+            createTask,
+            delButton,
+            completeTask,
+            createPin
+          );
 
-          seeTask.addEventListener('click', function () {
-            marker.openPopup();
-            seeTask.remove();
-            mainContent.appendChild(closePopup);
-            closePopup.addEventListener('click', function () {
-              marker.closePopup();
-              closePopup.remove();
-              mainContent.appendChild(seeTask);
-            });
-          });
+          createdPinTask(createPin, marker, map, createTask);
 
           //Delete Button function
-          delButton.addEventListener('click', function () {
-            createTask.remove();
-            delButton.remove();
-            completeTask.remove();
-            seeTask.remove();
-            marker.remove();
-          });
+          deleteElements(
+            delButton,
+            createTask,
+            delButton,
+            completeTask,
+            createPin,
+            marker
+          );
+
           //Completed Task function
-          completeTask.addEventListener('click', function () {
-            createTask.style.textDecoration = 'line-through';
-          });
+          completeTaskButton(completeTask, createTask);
+
           //Giving elements properties
-          createTask.id = 'orderedList';
-          delButton.id = 'delButton';
-          delButton.textContent = 'Delete Task';
-          completeTask.id = 'completeTask';
-          completeTask.textContent = 'Complete Task';
-          seeTask.classList = 'seeTask';
-          seeTask.textContent = 'See Task';
-          closePopup.classList = 'seeTask';
-          closePopup.textContent = 'Close Pop Up';
-
-          //Appending elements to HTML
-          mainContent.appendChild(createTask);
-          mainContent.appendChild(delButton);
-          mainContent.appendChild(completeTask);
-          mainContent.appendChild(seeTask);
-
-          createTask.textContent = textValue.value;
-          textValue.value = null;
+          assignValuesToElements(
+            createTask,
+            delButton,
+            completeTask,
+            createPin,
+            textValue,
+            'See Task'
+          );
         }
       });
       ///////////////////////////////////////////////////////////////////////////
@@ -83,12 +166,10 @@ if (navigator.geolocation)
       ///////////////////////////////////////////////////////////////////////////
 
       addButton.addEventListener('click', function () {
-        const createPin = document.createElement('button');
         const createTask = document.createElement('p');
         const delButton = document.createElement('button');
         const completeTask = document.createElement('button');
-        const seeTask = document.createElement('button');
-        const closePopup = document.createElement('button');
+        const createPin = document.createElement('button');
 
         navigator.geolocation.getCurrentPosition(function (position) {
           const { latitude } = position.coords;
@@ -100,64 +181,44 @@ if (navigator.geolocation)
             riseOnHover: 'true',
           });
 
-          createPin.addEventListener('click', function () {
-            marker.addTo(map).bindPopup(`${createTask.textContent}`);
-
-            createPin.remove();
-            mainContent.appendChild(seeTask);
-            seeTask.addEventListener('click', function () {
-              marker.openPopup();
-              seeTask.remove();
-              mainContent.appendChild(closePopup);
-              closePopup.addEventListener('click', function () {
-                marker.closePopup();
-                closePopup.remove();
-                mainContent.appendChild(seeTask);
-              });
-            });
-          });
-          // click function to delete a task
-          delButton.addEventListener('click', function () {
-            createTask.remove();
-            delButton.remove();
-            completeTask.remove();
-            createPin.remove();
-            seeTask.remove();
-            closePopup.remove();
-            marker.remove();
-          });
-
-          // Click function to mark a task complete
-          completeTask.addEventListener('click', function () {
-            createTask.style.textDecoration = 'line-through';
-          });
-
-          // createPin.addEventListener();
-
-          // Assigning created classes values, class, id
-          createTask.id = 'orderedList';
-          delButton.id = 'delButton';
-          delButton.innerHTML = 'Delete Task';
-          completeTask.id = 'completeTask';
-          completeTask.innerHTML = 'Complete Task';
-          createPin.classList = 'seeTask';
-          createPin.textContent = 'Create Pin';
-          seeTask.classList = 'seeTask';
-          seeTask.textContent = 'See Task';
-          closePopup.classList = 'seeTask';
-          closePopup.textContent = 'Close Pop Up';
-
           // Appending created elements to side bar
           if (!textValue.value) {
             alert('Please add task');
           } else {
-            mainContent.appendChild(createTask);
-            mainContent.appendChild(delButton);
-            mainContent.appendChild(completeTask);
-            mainContent.appendChild(createPin);
+            appendElements(
+              section1,
+              createTask,
+              delButton,
+              completeTask,
+              createPin
+            );
 
-            createTask.textContent = textValue.value;
-            textValue.value = null;
+            createdPinTask(createPin, marker, map, createTask);
+
+            //Delete Button function
+            deleteElements(
+              delButton,
+              createTask,
+              delButton,
+              completeTask,
+              createPin,
+              marker
+            );
+
+            //Completed Task function
+            completeTaskButton(completeTask, createTask);
+
+            // createPin.addEventListener();
+
+            // Assigning created classes values, class, id
+            assignValuesToElements(
+              createTask,
+              delButton,
+              completeTask,
+              createPin,
+              textValue,
+              'Create Pin'
+            );
           }
         });
       });
@@ -181,3 +242,4 @@ if (navigator.geolocation)
       alert('Could not get your position, browser needs your current position');
     }
   );
+}
